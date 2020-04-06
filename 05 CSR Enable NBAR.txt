@@ -1,0 +1,31 @@
+
+
+! ADD NBAR STARTS HERE
+!
+! ENTER CONFIG MODE OF DEVICE
+configure terminal
+! REMOVE CONFIG FROM INTERFACES
+interface range gig1-3
+ no ip flow monitor IPv4_NETFLOW in
+ no ip flow monitor IPv4_NETFLOW out
+! REMOVE RECORD FROM MONITOR
+flow monitor IPv4_NETFLOW
+ no record
+! MODIFY FLOW RECORD TO ADD APPLICATION NAME
+flow record STEALTHWATCH_FLOW_RECORD
+ collect application name
+! MODIFY EXPORTER FOR APPLICATIONS
+flow exporter NETFLOW_TO_STEALTHWATCH
+ option application-table timeout 60
+ option application-attributes timeout 300
+! REAPPLY RECORD TO MONITOR
+flow monitor IPv4_NETFLOW
+ record STEALTHWATCH_FLOW_RECORD
+! APPLY MONITOR AND NBAR TO INTERFACES
+interface range gig1-3
+ ip flow monitor IPv4_NETFLOW in
+ ip nbar protocol-discovery
+! SAVE CONFIG
+end
+wr mem
+!

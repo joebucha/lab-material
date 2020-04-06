@@ -1,0 +1,12 @@
+! ADD MONITOR IN OUT TO GIG1-2 STARTS HERE
+!
+! ENTER CONFIG MODE OF DEVICE
+configure terminal
+! ADD MONITOR CONFIG TO GIG1 AND GIG2
+interface range gig1-2
+ ip flow monitor IPv4_NETFLOW in
+ ip flow monitor IPv4_NETFLOW out
+! SAVE CONFIG
+end
+wr mem
+!

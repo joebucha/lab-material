@@ -1,0 +1,12 @@
+
+! ADD MONITOR OUT TO GIG3 STARTS HERE
+!
+! ENTER CONFIG MODE OF DEVICE
+configure terminal
+! ADD MONITOR CONFIG TO GIG3
+interface gig3
+ ip flow monitor IPv4_NETFLOW out
+! SAVE CONFIG
+end
+wr mem
+!

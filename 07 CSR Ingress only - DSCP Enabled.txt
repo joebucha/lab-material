@@ -1,0 +1,15 @@
+! REMOVE OUT ON ALL AND ADD BACK ALL THE IN
+!
+! Enter configuration mode of router
+conf t
+!
+! Remove Out and Add In
+interface range g1-3
+ no ip flow monitor IPv4_NETFLOW out
+ ip flow monitor IPv4_NETFLOW in
+!
+! Exit and save configuration
+end
+write mem
+!
+

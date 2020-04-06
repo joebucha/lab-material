@@ -1,0 +1,18 @@
+! ADD DSCP TAGGING POLICY TO ROUTER WHICH AFFECTS TOS AND NETFLOW MATCHING
+!
+! Enter configuration mode of router
+conf t
+!
+! Add policy map to set DSCP to EF for all traffic
+policy-map marktos
+ class class-default
+  set dscp ef
+!
+! Add policy to all interfaces to manipultate DSCP on outbound packets
+interface range g1-3
+ service-policy output marktos
+!
+! Exit and save configuration
+end
+write mem
+!

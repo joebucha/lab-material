@@ -1,0 +1,61 @@
+! CONFIG FIX STARTS HERE
+!
+! ENTER CONFIG MODE OF DEVICE
+configure terminal
+! REMOVE MONITOR CONFIG FROM INTERFACES
+interface range gig1-3
+ no ip flow monitor IPv4_NETFLOW in
+ no ip flow monitor IPv4_NETFLOW out
+ ! REMOVE FLOW MONITOR 
+no flow monitor IPv4_NETFLOW
+! REMOVE FLOW RECORD
+no flow record STEALTHWATCH_FLOW_RECORD
+! REMOVE FLOW EXPORTER
+no flow exporter NETFLOW_TO_STEALTHWATCH
+! EXIT CONFIG MODE AND SAVE CONFIGURATION
+end
+wr mem
+!
+! ADD CORRECT CONFIG BACK IN
+configure terminal
+flow record STEALTHWATCH_FLOW_RECORD
+ description NetFlow record for SW
+ match ipv4 tos
+ match ipv4 source address
+ match ipv4 destination address
+ match transport destination-port
+ match transport source-port
+ match interface input
+ match ipv4 protocol
+ collect routing source as
+ collect routing destination as
+ collect routing next-hop address ipv4
+ collect ipv4 dscp
+ collect ipv4 id
+ collect ipv4 source prefix
+ collect ipv4 source mask
+ collect ipv4 destination mask
+ collect ipv4 ttl minimum
+ collect ipv4 ttl maximum
+ collect transport tcp flags
+ collect interface output
+ collect counter bytes
+ collect counter packets
+ collect timestamp sys-uptime first
+ collect timestamp sys-uptime last
+flow exporter NETFLOW_TO_STEALTHWATCH
+ description Export NetFlow to SW
+ destination 198.19.20.139
+ transport udp 2055
+ template data timeout 30
+ option interface-table
+flow monitor IPv4_NETFLOW
+ exporter NETFLOW_TO_STEALTHWATCH
+ cache timeout active 60
+ record STEALTHWATCH_FLOW_RECORD
+int range gig1-3
+ ip flow monitor IPv4_NETFLOW input
+! SAVE CONFIG
+end
+wr mem
+!

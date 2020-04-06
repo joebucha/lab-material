@@ -1,0 +1,24 @@
+
+! CONFIG FIX STARTS HERE
+!
+! ENTER CONFIG MODE OF DEVICE
+configure terminal
+! REMOVE CONFIG FROM INTERFACES
+interface range gig1-3
+ no ip flow monitor IPv4_NETFLOW in
+! REMOVE RECORD FROM MONITOR
+flow monitor IPv4_NETFLOW
+ no record
+! MODIFY FLOW RECORD
+flow record STEALTHWATCH_FLOW_RECORD
+ match transport source-port
+! REAPPLY RECORD TO MONITOR
+flow monitor IPv4_NETFLOW
+ record STEALTHWATCH_FLOW_RECORD
+! REAPPLY MONITOR TO INTERFACES
+interface range gig1-3
+ ip flow monitor IPv4_NETFLOW in
+! EXIT CONFIG MODE AND SAVE CONFIGURATION
+end
+wr mem
+!

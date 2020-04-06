@@ -1,0 +1,13 @@
+
+
+! REMOVE MONITORS FROM GIG1 AND GIG2 STARTS HERE
+!
+! ENTER CONFIG MODE OF DEVICE
+configure terminal
+! REMOVE MONITOR CONFIG FROM INTERFACES 1 AND 2
+interface range gig1-2
+ no ip flow monitor IPv4_NETFLOW in
+! SAVE CONFIG
+end
+wr mem
+!
